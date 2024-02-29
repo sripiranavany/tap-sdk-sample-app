@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <property name="LOG_PATH" value="/hms/logs/tap-sdk-sample-app"/>
+    <variable name="FRAMEWORK_LOG_LEVEL" value="${FRAMEWORK_LOG_LEVEL:-ERROR}" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>%date{yyyy:MM:dd HH:mm:ss:SSS} %-5level [%thread] [${PID:-}] %logger{1} T[%X{X-B3-TraceId:-}]
+                S[%X{X-B3-SpanId:-}] PS[%X{B3-ParentSpanId:-}] - %msg %n
+            </pattern>
+        </encoder>
+    </appender>
+    <appender name="debug-appender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/tap-sdk-sample-app-debug.log</file>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/tap-sdk-sample-app-debug.log.%d{yyyy-MM-dd}
+            </fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{yyyy:MM:dd HH:mm:ss:SSS} %-5level [%thread] [${PID:-}] %logger{1} T[%X{X-B3-TraceId:-}]
+                S[%X{X-B3-SpanId:-}] PS[%X{B3-ParentSpanId:-}] - %msg %n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="info-appender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/tap-sdk-sample-app-info.log</file>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/tap-sdk-sample-app-info.log.%d{yyyy-MM-dd}
+            </fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{yyyy:MM:dd HH:mm:ss:SSS} %-5level [%thread] [${PID:-}] %logger{1} T[%X{X-B3-TraceId:-}]
+                S[%X{X-B3-SpanId:-}] PS[%X{B3-ParentSpanId:-}] - %msg %n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="error-appender"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/tap-sdk-sample-app-error.log</file>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/tap-sdk-sample-app-error.log.%d{yyyy-MM-dd}
+            </fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{yyyy:MM:dd HH:mm:ss:SSS} %-5level [%thread] [${PID:-}] %logger{1} T[%X{X-B3-TraceId:-}]
+                S[%X{X-B3-SpanId:-}] PS[%X{B3-ParentSpanId:-}] - %msg %n
+            </pattern>
+        </encoder>
+    </appender>
+    <logger name="org.springframework" level="${FRAMEWORK_LOG_LEVEL}" additivity="true">
+        <appender-ref ref="debug-appender"/>
+    </logger>
+    <logger name="DEBUG_LOG" level="DEBUG" additivity="true">
+        <appender-ref ref="debug-appender"/>
+    </logger>
+    <logger name="INFO_LOG" level="INFO" additivity="true">
+        <appender-ref ref="info-appender"/>
+    </logger>
+    <logger name="ERROR_LOG" level="ERROR" additivity="true">
+        <appender-ref ref="error-appender"/>
+    </logger>
+    <root level="DEBUG">
+        <appender-ref ref="error-appender" />
+        <appender-ref ref="info-appender"/>
+        <appender-ref ref="debug-appender"/>
+    </root>
+</configuration>
