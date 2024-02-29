@@ -1,17 +1,25 @@
 package com.hms.cpaas.sampleapp.controller
 
 import com.hms.cpaas.sampleapp.dto.SdkResponse
+import com.hms.cpaas.sampleapp.model.TempResponse
+import com.hms.cpaas.sampleapp.repository.TempResponseRepository
 import com.hms.cpaas.sampleapp.repository.UserRepository
+import com.hms.cpaas.sampleapp.util.CommonUtils
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class NotificationController(private val userRepository: UserRepository) {
+class NotificationController(
+    private val userRepository: UserRepository,
+    private val tempResponseRepository: TempResponseRepository,
+    private val commonUtils: CommonUtils
+) {
     companion object {
         private val logger = LoggerFactory.getLogger(NotificationController::class.java)
     }
+
     @PostMapping(value = ["/sdk/response"])
     fun handleSdkResponse(@RequestBody sdkResponse: SdkResponse) {
         val isUserExists = userRepository.existsByMaskedNumber(sdkResponse.subscriberId)
@@ -24,6 +32,19 @@ class NotificationController(private val userRepository: UserRepository) {
                 userRepository.save(user)
             }
             logger.info("user ${user?.username} status updated to ${sdkResponse.status}")
+        } else {
+            logger.error("user not found with subscriberId ${sdkResponse.subscriberId}")
+            val tempResponse = TempResponse(
+                subscriberId = sdkResponse.subscriberId,
+                status = sdkResponse.status,
+                applicationId = sdkResponse.applicationId,
+                frequency = sdkResponse.frequency,
+                createdAt = commonUtils.getCurrentTimestamp(),
+                timeStamp = sdkResponse.timeStamp,
+                version = sdkResponse.version
+            )
+            tempResponseRepository.save(tempResponse)
+            logger.info("temp response saved for subscriberId ${sdkResponse.subscriberId}")
         }
     }
 }
