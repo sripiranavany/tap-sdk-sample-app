@@ -27,9 +27,10 @@ class SecurityConfig {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .csrf{csrf -> csrf.ignoringRequestMatchers("sdk/response")}
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/css/**", "/js/**","/signup","/assets/**", "/sdk/**","/sdk").permitAll()
+                    .requestMatchers("/css/**", "/js/**","/signup","/assets/**", "sdk/response","/sdk").permitAll()
                     .anyRequest().authenticated()
             }.formLogin { formLogin ->
                 formLogin

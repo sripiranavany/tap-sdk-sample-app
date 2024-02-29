@@ -103,10 +103,4 @@ class AuthController(
         }
         return ModelAndView("auth/login")
     }
-
-    @PostMapping(value = ["/sdk/response"])
-    fun handleSdkResponse(@RequestBody sdkResponse:SdkResponse) {
-        logger.info("SDK Response")
-        logger.info(sdkResponse.toString())
-    }
 }

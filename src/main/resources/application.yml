@@ -47,4 +47,4 @@ sdk:
     secret: fc5bf2bd-161d-463a-8b9e-43ea33920fbd
     url: https://da-digimart.hsenidmobile.com/sdk/subscription/authorize
   redirect:
-    url: http://localhost:8080/sdk/
+    url: https://cpaasdemo.hsenidmobile.com/tap-sdk-sample-app/sdk/
