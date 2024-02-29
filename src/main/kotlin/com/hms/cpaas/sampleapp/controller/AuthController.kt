@@ -4,6 +4,7 @@ import com.hms.cpaas.sampleapp.model.User
 import com.hms.cpaas.sampleapp.repository.TempResponseRepository
 import com.hms.cpaas.sampleapp.repository.UserRepository
 import com.hms.cpaas.sampleapp.util.CommonUtils
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -34,8 +35,14 @@ class AuthController(
     }
 
     @GetMapping(value = ["/login"])
-    fun login(): ModelAndView {
-        return ModelAndView("auth/login")
+    fun login(request: HttpServletRequest): ModelAndView {
+        val modelAndView = ModelAndView("auth/login")
+        val errorMessage:String? = request.getSession(false)?.getAttribute("loginError")?.toString()
+        if(errorMessage != null){
+            modelAndView.addObject("loginError",errorMessage)
+            request.session.removeAttribute("loginError")
+        }
+        return modelAndView
     }
 
     @GetMapping(value = ["/signup"])

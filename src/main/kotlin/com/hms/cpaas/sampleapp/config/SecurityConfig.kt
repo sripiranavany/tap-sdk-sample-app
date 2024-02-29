@@ -27,14 +27,21 @@ class SecurityConfig {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .csrf{csrf -> csrf.ignoringRequestMatchers("sdk/*")}
+            .csrf { csrf -> csrf.ignoringRequestMatchers("sdk/*") }
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/css/**", "/js/**","/signup","/assets/**", "sdk/*","/sdk").permitAll()
+                    .requestMatchers("/css/**", "/js/**", "/signup", "/assets/**", "sdk/*", "/sdk").permitAll()
                     .anyRequest().authenticated()
             }.formLogin { formLogin ->
                 formLogin
-                    .loginPage("/login").permitAll()
+                    .loginPage("/login")
+                    .failureHandler { request, response, exception ->
+                        var errorMessage = exception.localizedMessage + " or user not active!"
+                        request.session.setAttribute("loginError", errorMessage)
+                        val contextPath = request.contextPath
+                        response.sendRedirect("$contextPath/login?error=true")
+                    }
+                    .permitAll()
             }
             .logout { logout ->
                 logout

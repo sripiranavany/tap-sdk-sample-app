@@ -157,6 +157,9 @@
     <form th:action="@{/login}" th:method="post">
         <img class="mb-4" th:src="@{/assets/brand/bootstrap-logo.svg}" alt="" width="72" height="57">
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <div th:if="${loginError}" class="text-danger">
+            <p th:text="${loginError}">Error message here.</p>
+        </div>
 
         <div class="form-floating">
             <input type="text" class="form-control" name="username" id="username" placeholder="Enter user name">
