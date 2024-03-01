@@ -160,7 +160,7 @@
         <div th:if="${loginError}" class="text-danger">
             <p th:text="${loginError}">Error message here.</p>
         </div>
-
+        <input type="hidden" name="_csrf" value="${_csrf.token}"/> <!-- Include CSRF token if needed -->
         <div class="form-floating">
             <input type="text" class="form-control" name="username" id="username" placeholder="Enter user name">
             <label for="username">Username</label>

@@ -157,7 +157,7 @@
     <form th:action="@{/signup}" th:method="post">
         <img class="mb-4" th:src="@{/assets/brand/bootstrap-logo.svg}" alt="" width="72" height="57">
         <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
-
+        <input type="hidden" name="_csrf" value="${_csrf.token}"/> <!-- Include CSRF token if needed -->
         <div class="form-floating">
             <input type="text" class="form-control" id="userName" name="username" th:field="*{user.username}" placeholder="Enter User Name">
             <label for="username">User Name</label>

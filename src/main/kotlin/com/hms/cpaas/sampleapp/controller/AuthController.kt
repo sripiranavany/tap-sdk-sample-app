@@ -1,13 +1,22 @@
 package com.hms.cpaas.sampleapp.controller
 
+import com.hms.cpaas.sampleapp.dto.UnRegRequest
+import com.hms.cpaas.sampleapp.dto.UnRegResponse
 import com.hms.cpaas.sampleapp.model.User
 import com.hms.cpaas.sampleapp.repository.TempResponseRepository
 import com.hms.cpaas.sampleapp.repository.UserRepository
 import com.hms.cpaas.sampleapp.util.CommonUtils
+import io.netty.handler.ssl.SslContextBuilder
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.MediaType
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Controller
 import org.springframework.validation.BindingResult
@@ -15,8 +24,10 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.view.RedirectView
+import reactor.netty.http.client.HttpClient
 
 @Controller
 class AuthController(
@@ -27,19 +38,43 @@ class AuthController(
     @Value("\${sdk.api.key}") private val apiKey: String,
     @Value("\${sdk.api.secret}") private val apiSecret: String,
     @Value("\${sdk.api.url}") private val apiUrl: String,
-    @Value("\${sdk.redirect.url}") private val sdkRdirectUrl: String
+    @Value("\${sdk.redirect.url}") private val sdkRdirectUrl: String,
+    @Value("\${sdk.app.url}") private val baseUrl: String,
+    @Value("\${sdk.app.id}") private val appId: String,
+    @Value("\${sdk.app.password}") private val appPassword: String,
+    @Value("\${ssl.validate.cert}") private val isSslValidateCert: Boolean,
+    private var cpaasWebClient: WebClient,
 ) {
 
     companion object {
         private val logger = LoggerFactory.getLogger(AuthController::class.java)
+        private const val unsubscriptionUri = "/subscription/reg"
+    }
+
+    init {
+        val httpClient = if (!isSslValidateCert) {
+            val sslContext = SslContextBuilder
+                .forClient()
+                .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                .build()
+
+            HttpClient.create()
+                .secure { spec -> spec.sslContext(sslContext) }
+        } else {
+            HttpClient.create()
+        }
+        cpaasWebClient = WebClient.builder()
+            .clientConnector(ReactorClientHttpConnector(httpClient))
+            .baseUrl(baseUrl)
+            .build()
     }
 
     @GetMapping(value = ["/login"])
     fun login(request: HttpServletRequest): ModelAndView {
         val modelAndView = ModelAndView("auth/login")
-        val errorMessage:String? = request.getSession(false)?.getAttribute("loginError")?.toString()
-        if(errorMessage != null){
-            modelAndView.addObject("loginError",errorMessage)
+        val errorMessage: String? = request.getSession(false)?.getAttribute("loginError")?.toString()
+        if (errorMessage != null) {
+            modelAndView.addObject("loginError", errorMessage)
             request.session.removeAttribute("loginError")
         }
         return modelAndView
@@ -53,7 +88,6 @@ class AuthController(
 
     @GetMapping(value = ["/"])
     fun home(): ModelAndView {
-//        need to check the subscription related endpoints
         return ModelAndView("home")
     }
 
@@ -120,6 +154,42 @@ class AuthController(
                 }
             }
         }
+        return ModelAndView("auth/login")
+    }
+
+    @PostMapping(value = ["/unsubscribe"])
+    fun unsubscribeUser(@AuthenticationPrincipal userDetails: UserDetails): ModelAndView {
+        val username = userDetails.username
+        val user = userRepository.findByUsername(username)
+        if (user != null) {
+            val unRegRequest = UnRegRequest(
+                appId,
+                appPassword,
+                "tel:${user?.maskedNumber}",
+                0
+            )
+            val response = cpaasWebClient.post()
+                .uri(unsubscriptionUri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(unRegRequest)
+                .retrieve()
+                .onStatus({ it.isError }) { clientResponse ->
+                    throw UsernameNotFoundException("Error calling charging service: ${clientResponse.statusCode()}")
+                }
+                .bodyToMono(UnRegResponse::class.java)
+                .block() // This forces the operation to be synchronous
+
+            logger.info("******************************")
+            logger.info("user: $user")
+            logger.info("response: $response")
+            logger.info("*******************************")
+        }
+//        call the spring security logout endpoint
+        return ModelAndView("redirect:/logout")
+    }
+
+    @GetMapping(value = ["/access-denied"])
+    fun accessDenidePage(): ModelAndView {
         return ModelAndView("auth/login")
     }
 }

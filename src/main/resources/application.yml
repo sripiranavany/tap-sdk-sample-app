@@ -48,3 +48,10 @@ sdk:
     url: https://da-digimart.hsenidmobile.com/sdk/subscription/authorize
   redirect:
     url: https://cpaasdemo.hsenidmobile.com/tap-sdk-sample-app/sdk/
+  app:
+    url: https://da-digimart.hsenidmobile.com
+    id: APP_000040
+    password: f9fba739bfffba8d19b91c7970b81161
+ssl:
+  validate:
+    cert: false
