@@ -50,6 +50,11 @@ class SecurityConfig {
                     .logoutSuccessUrl("/login")
                     .permitAll()
             }
+            .rememberMe { rememberMe ->
+                rememberMe
+                    .key("uniqueAndSecret")
+                    .tokenValiditySeconds(86400)
+            }
             .exceptionHandling { exceptionHandling ->
                 exceptionHandling
                     .accessDeniedPage("/access-denied")

@@ -11,13 +11,10 @@
     <title>Product Sample</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/product/">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script th:src="@{/assets/dist/js/jquery-3.7.1.min.js}"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
     <link th:href="@{/assets/dist/css/bootstrap.min.css}" rel="stylesheet">
-    <script th:src="@{/assets/dist/js/bootstrap.min.js}"></script>
 
     <style>
         .bd-placeholder-img {
@@ -235,9 +232,10 @@
             <h1 class="display-3 fw-bold">Designed for engineers</h1>
             <h3 class="fw-normal text-muted mb-3">Build anything you want with Aperture</h3>
             <div class="d-flex gap-3 justify-content-center lead fw-normal">
-                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#unsubscribeModal">
-                    Unsubscribe
-                </button>
+                <form th:action="@{/unsubscribe}" th:method="post" class="d-inline">
+                    <input type="hidden" name="_csrf" value="${_csrf.token}"/> <!-- CSRF token -->
+                    <button type="submit" class="btn btn-warningy">Unsubscribe</button>
+                </form>
                 <a class="icon-link" href="#">
                     Buy
                     <svg class="bi">
@@ -378,30 +376,6 @@
         </div>
     </div>
 </footer>
-<!-- Modal -->
-<div class="modal fade" id="unsubscribeModal" tabindex="-1" aria-labelledby="unsubscribeModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="unsubscribeModalLabel">Confirm Unsubscribe</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to unsubscribe?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <!-- Form inside the modal -->
-                <form th:action="@{/unsubscribe}" th:method="post" class="d-inline">
-                    <input type="hidden" name="_csrf" value="${_csrf.token}"/> <!-- CSRF token -->
-                    <button type="submit" class="btn btn-primary">Unsubscribe</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script th:src="@{/assets/dist/js/bootstrap.bundle.min.js}"></script>
 
