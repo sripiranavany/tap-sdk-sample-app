@@ -3,7 +3,7 @@ package com.hms.cpaas.sampleapp.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class ChargingResponse(
-    val subscriberInfo: List<SubscriberInfo>,
+    val subscriberInfo: List<SubscriberInfo>?,
     val statusDetail: String?,
     @JsonProperty("recipient-address-masked") val recipientAddressMasked: String?,
     val version: String?,

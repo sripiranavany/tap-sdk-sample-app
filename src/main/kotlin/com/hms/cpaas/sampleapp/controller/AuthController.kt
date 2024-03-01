@@ -168,6 +168,9 @@ class AuthController(
                 "tel:${user?.maskedNumber}",
                 0
             )
+            logger.info("----------------------------------------------")
+            logger.info("Unsubscribe request: $unRegRequest")
+            logger.info("----------------------------------------------")
             val response = cpaasWebClient.post()
                 .uri(unsubscriptionUri)
                 .contentType(MediaType.APPLICATION_JSON)
