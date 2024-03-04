@@ -168,6 +168,7 @@ class AuthController(
                 "tel:${user?.maskedNumber}",
                 0
             )
+            logger.info("Unregistration request: $unRegRequest")
             val response = cpaasWebClient.post()
                 .uri(unsubscriptionUri)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -178,7 +179,6 @@ class AuthController(
                 }
                 .bodyToMono(UnRegResponse::class.java)
                 .block() // This forces the operation to be synchronous
-            logger.info("Unregistration response: $response")
 
         }
 //        call the spring security logout endpoint

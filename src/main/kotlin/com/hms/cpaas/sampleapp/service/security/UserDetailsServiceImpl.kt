@@ -56,6 +56,7 @@ class UserDetailsServiceImpl(
             val chargingRequest =
                 ChargingRequest(appId, appPassword, "tel: ${user.maskedNumber}")
 
+            logger.debug("Charging request: $chargingRequest")
             val response = cpaasWebClient.post()
                 .uri(getChargingDetails)
                 .contentType(MediaType.APPLICATION_JSON)
