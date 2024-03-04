@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
+import java.util.Objects
 
 class UserDetailsServiceImpl(
     @Value("\${sdk.app.url}") private val baseUrl: String,
@@ -52,7 +53,7 @@ class UserDetailsServiceImpl(
         val user = userRepository.findByUsername(username)
             ?: throw UsernameNotFoundException("User not found")
 
-        if (user.status.equals("REGISTERED", ignoreCase = true)) {
+        if (user.status?.isNotEmpty() == true) {
             val chargingRequest =
                 ChargingRequest(appId, appPassword, "tel: ${user.maskedNumber}")
 
