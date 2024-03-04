@@ -53,7 +53,7 @@ class UserDetailsServiceImpl(
         val user = userRepository.findByUsername(username)
             ?: throw UsernameNotFoundException("User not found")
 
-        if (user.status?.isNotEmpty() == true) {
+        if (user.status?.isNotEmpty() == true && !user.status.equals("UNREGISTERED", ignoreCase = true)) {
             val chargingRequest =
                 ChargingRequest(appId, appPassword, "tel: ${user.maskedNumber}")
 
