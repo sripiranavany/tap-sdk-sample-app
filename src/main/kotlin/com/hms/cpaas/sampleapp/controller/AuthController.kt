@@ -94,10 +94,12 @@ class AuthController(
     @PostMapping(value = ["/signup"])
     fun registerUser(@ModelAttribute("user") @Valid user: User, bindingResult: BindingResult): Any {
         if (bindingResult.hasErrors()) {
+            logger.error("Error in user registration form: $bindingResult")
             return ModelAndView("auth/signup")
         }
         if (userRepository.existsByUsernameAndStatusEquals(user.username, "REGISTERED")) {
             bindingResult.rejectValue("username", "error.user", "This username is already taken")
+            logger.error("Username already taken ${user.username}")
             return ModelAndView("auth/login")
         } else {
             if (userRepository.existsByUsername(user.username)) {
@@ -111,7 +113,7 @@ class AuthController(
             user.password = passwordEncoder.encode(user.password)
             user.requestId = requestId
             userRepository.save(user)
-
+            logger.info("User saved: $user waiting for confirmation")
             val requestTime = commonUtils.getCurrentTimestamp()
             val signature = "$apiKey|$requestTime|$apiSecret"
             val encryptedSignature = commonUtils.sha512(signature)
