@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
-import java.util.Objects
 
 class UserDetailsServiceImpl(
     @Value("\${sdk.app.url}") private val baseUrl: String,
@@ -73,6 +72,11 @@ class UserDetailsServiceImpl(
                 logger.info("Charging call response: $response")
                 if (response.statusCode == "S1000" && response.subscriberInfo?.all { it.subscriptionStatus == "REGISTERED" } == true) {
                     logger.info("Charging info OK for user: $username")
+                    if (user.status != response.subscriberInfo?.firstOrNull()?.subscriptionStatus) {
+                        logger.info("User status changed from ${user.status} to ${response.subscriberInfo?.firstOrNull()?.subscriptionStatus}")
+                        user.status = response.subscriberInfo?.firstOrNull()?.subscriptionStatus.toString()
+                        userRepository.save(user)
+                    }
                     return User(user.username, user.password, emptyList())
                 } else {
                     user.status = response.subscriberInfo?.firstOrNull()?.subscriptionStatus ?: "UNREGISTERED"
