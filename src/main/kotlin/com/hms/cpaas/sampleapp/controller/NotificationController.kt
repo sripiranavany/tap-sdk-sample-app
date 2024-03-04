@@ -31,6 +31,7 @@ class NotificationController(
                 user.frequency = sdkResponse.frequency
                 userRepository.save(user)
             }
+            logger.info("Notification received : $sdkResponse")
             logger.info("user ${user?.username} status updated to ${sdkResponse.status}")
         } else {
             logger.error("user not found with subscriberId ${sdkResponse.subscriberId}")
@@ -45,6 +46,7 @@ class NotificationController(
             )
             tempResponseRepository.save(tempResponse)
             logger.info("temp response saved for subscriberId ${sdkResponse.subscriberId}")
+            logger.info("Notification received : $sdkResponse")
         }
     }
 }

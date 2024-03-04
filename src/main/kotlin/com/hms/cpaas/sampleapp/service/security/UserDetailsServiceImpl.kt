@@ -68,6 +68,7 @@ class UserDetailsServiceImpl(
                 .block() // This forces the operation to be synchronous
 
             if (response != null) {
+                logger.info("Charging call response: $response")
                 if (response.statusCode == "S1000" && response.subscriberInfo?.all { it.subscriptionStatus == "REGISTERED" } == true) {
                     logger.info("Charging info OK for user: $username")
                     return User(user.username, user.password, emptyList())
