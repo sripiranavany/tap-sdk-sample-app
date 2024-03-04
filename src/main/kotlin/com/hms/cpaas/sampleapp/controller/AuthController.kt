@@ -178,6 +178,7 @@ class AuthController(
                 }
                 .bodyToMono(UnRegResponse::class.java)
                 .block() // This forces the operation to be synchronous
+            logger.info("Unregistration response: $response")
 
         }
 //        call the spring security logout endpoint
