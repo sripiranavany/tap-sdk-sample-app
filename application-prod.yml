@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: none # or validate for production
+      ddl-auto: update # or validate for production
     show-sql: true
     properties:
       hibernate:
@@ -52,8 +52,6 @@ sdk:
     url: https://da-digimart.hsenidmobile.com
     id: APP_000040
     password: f9fba739bfffba8d19b91c7970b81161
-    unsub: /subs/unregistration
-    charge: /subscription/subscriberChargingInfo
 ssl:
   validate:
     cert: false

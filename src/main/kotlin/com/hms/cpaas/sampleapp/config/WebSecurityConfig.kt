@@ -15,6 +15,7 @@ class WebSecurityConfig(
     @Value("\${sdk.app.id}") private val appId: String,
     @Value("\${sdk.app.password}") private val appPassword: String,
     @Value("\${ssl.validate.cert}") private val isSslValidateCert: Boolean,
+    @Value("\${sdk.app.charge}") private val getChargingDetails: String,
     private var cpaasWebClient: WebClient,
     private var userRepository: UserRepository
 ) {
@@ -26,7 +27,15 @@ class WebSecurityConfig(
 
     @Bean
     fun userDetailsService(): UserDetailsServiceImpl {
-        return UserDetailsServiceImpl(baseUrl, appId, appPassword, isSslValidateCert, cpaasWebClient, userRepository)
+        return UserDetailsServiceImpl(
+            baseUrl,
+            appId,
+            appPassword,
+            isSslValidateCert,
+            getChargingDetails,
+            cpaasWebClient,
+            userRepository
+        )
     }
 
 }

@@ -43,12 +43,12 @@ class AuthController(
     @Value("\${sdk.app.id}") private val appId: String,
     @Value("\${sdk.app.password}") private val appPassword: String,
     @Value("\${ssl.validate.cert}") private val isSslValidateCert: Boolean,
+    @Value("\${sdk.app.unsub}") private val unsubscriptionUri: String,
     private var cpaasWebClient: WebClient,
 ) {
 
     companion object {
         private val logger = LoggerFactory.getLogger(AuthController::class.java)
-        private const val unsubscriptionUri = "/subscription/reg"
     }
 
     init {
