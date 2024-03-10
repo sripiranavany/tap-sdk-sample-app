@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/sampleDB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://127.0.0.1:3306/sampleDB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: user
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -45,15 +45,15 @@ sdk:
   api:
     key: a35d5d0fb13a0e608a149f4ffa2a9916
     secret: fc5bf2bd-161d-463a-8b9e-43ea33920fbd
-    url: https://da-digimart.hsenidmobile.com/sdk/subscription/authorize
+    url: https://dev.sdp.hsenidmobile.com/sdk/subscription/authorize
   redirect:
-    url: https://cpaasdemo.hsenidmobile.com/tap-sdk-sample-app/sdk/
+    url: https://dev.sdp.hsenidmobile.com/tap-sdk-sample-app/sdk/
   app:
-    url: https://da-digimart.hsenidmobile.com
+    url: https://dev.sdp.hsenidmobile.com
     id: APP_000040
     password: f9fba739bfffba8d19b91c7970b81161
     unsub: /subs/unregistration
     charge: /subscription/subscriberChargingInfo
 ssl:
   validate:
-    cert: false
+    cert: false # true for production
