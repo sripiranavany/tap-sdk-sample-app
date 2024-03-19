@@ -52,6 +52,7 @@ class AuthController(
     }
 
     init {
+//        This check is to bypass the SSL certificate validation, do not use this in production
         val httpClient = if (!isSslValidateCert) {
             val sslContext = SslContextBuilder
                 .forClient()
@@ -118,6 +119,7 @@ class AuthController(
             val signature = "$apiKey|$requestTime|$apiSecret"
             val encryptedSignature = commonUtils.sha512(signature)
 
+//            TAP-SDK page url
             val sdkRedirectUrl =
                 "$apiUrl?apiKey=$apiKey&requestId=$requestId&requestTime=$requestTime&signature=$encryptedSignature&redirectUrl=$sdkRdirectUrl"
             return RedirectView(sdkRedirectUrl)
@@ -171,6 +173,7 @@ class AuthController(
                 0
             )
             logger.info("Unregistration request: $unRegRequest")
+//            Unsubscription call
             val response = cpaasWebClient.post()
                 .uri(unsubscriptionUri)
                 .contentType(MediaType.APPLICATION_JSON)

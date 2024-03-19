@@ -31,6 +31,7 @@ class UserDetailsServiceImpl(
     }
 
     init {
+        //        This check is to bypass the SSL certificate validation, do not use this in production
         val httpClient = if (!isSslValidateCert) {
             val sslContext = SslContextBuilder
                 .forClient()
