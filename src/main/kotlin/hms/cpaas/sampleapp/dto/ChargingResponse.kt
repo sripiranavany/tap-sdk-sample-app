@@ -16,5 +16,6 @@ data class SubscriberInfo(
     val statusDetail: String?,
     val lastChargedAmount: String?,
     val lastChargedDate: String?,
-    val statusCode: String?
+    val statusCode: String?,
+    val subscriberRequestId: String?,
 )

@@ -8,7 +8,7 @@ interface UserRepository : JpaRepository<User, Long> {
     fun existsByUsername(username: String): Boolean
     fun findByRequestId(requestId: String): User?
     fun existsByUsernameAndStatusEquals(username: String, status: String): Boolean
-
-    fun findByMaskedNumber(maskedNumber: String): User?
+    fun existsByRequestId(requestId: String): Boolean
     fun existsByMaskedNumber(maskedNumber: String): Boolean
+    fun findByMaskedNumber(maskedNumber: String): User?
 }
